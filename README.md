@@ -1,4 +1,4 @@
-<img alt="Selim, backend .NET engineer" src="assets/banner.png" width="100%">
+<img alt="Selim, backend .NET engineer" src="assets/banner-temple.png" width="100%">
 
 I'm Selim, a backend .NET engineer. Seven years of C#, five of them keeping one business platform alive in production: 5,000+ users, a SQL Server schema I designed, a .NET Framework 4.8 → .NET Core migration done without stopping the service, PostFinance payments behind a webhook secured with a shared secret, and third-level support straight from the people using it.
 

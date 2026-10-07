@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Bannière du profil GitHub : un temple grec en marbre, grainé comme la photo de
 profil, traversé par la pluie de code binaire verte de Matrix. Fond noir, un seul
-accent vert (charte Lens). Sortie : assets/banner.png."""
+accent vert (charte Lens). Sortie : assets/banner-temple.png."""
 import random
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageChops, ImageFilter
@@ -136,5 +136,5 @@ d.text((74 * K, 146 * K), "backend .NET engineer", font=mono, fill=VERT_CLAIR)
 d.text((74 * K, 184 * K), "reads binaries · ships services", font=mono, fill=VERT)
 meandre(d, 74 * K, 236 * K, 13, 7 * K, GRIS)
 
-fond.convert("RGB").save("assets/banner.png", optimize=True)
+fond.convert("RGB").save("assets/banner-temple.png", optimize=True)
 print("ok")
