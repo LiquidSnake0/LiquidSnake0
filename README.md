@@ -28,7 +28,7 @@ C# · .NET · ASP.NET Core · Entity Framework · SQL Server · Kafka · Blazor 
 
 ### Away from the keyboard
 
-I mix on vinyl and a Pioneer DDJ-FLX4, and I tinker with retro handhelds. Before backend work I wrote a WPF app that let quadriplegic users drive their wheelchair with their eyes, talking to an Arduino over a serial link.
+Most days include a training session and some time behind the decks, mixing vinyl on a Pioneer DDJ-FLX4. I grew up on 90s consoles and still tinker with retro handhelds, which is where the urge to open a game and see how it works comes from. Before backend work I wrote a WPF app that let quadriplegic users drive their wheelchair with their eyes, talking to an Arduino over a serial link.
 
 ---
 
