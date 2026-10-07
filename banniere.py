@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Bannière du profil GitHub : un temple grec en marbre, grainé comme la photo de
 profil, traversé par la pluie de code binaire verte de Matrix. Fond noir, un seul
-accent vert (charte Lens). Sortie : assets/banner-montserrat.png."""
+accent vert (charte Lens). Sortie : assets/banner-surf.png."""
 import random
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageChops, ImageFilter
@@ -157,12 +157,12 @@ fond.alpha_composite(noir)
 d = ImageDraw.Draw(fond)
 mono = ImageFont.truetype(MONO, 26 * K)
 vagues(d, 74 * K + 27 * K, 72 * K, 11, 21, GRIS)
-titre = ImageFont.truetype("/usr/share/fonts/TTF/Montserrat-SemiBold.ttf", 42 * K)
-xt = 74 * K
-for lettre in "COMPUTER SCIENTIST":                # capitales espacées, façon inscription
-    d.text((xt, 136 * K), lettre, font=titre, fill=(232, 229, 222))
-    xt += d.textlength(lettre, font=titre) + 6 * K
+titre = ImageFont.truetype("/usr/share/fonts/TTF/Montserrat-SemiBold.ttf", 40 * K)
+sous = ImageFont.truetype("/usr/share/fonts/TTF/Montserrat-Medium.ttf", 30 * K)
+d.text((76 * K, 120 * K), "A computer scientist", font=titre, fill=(232, 229, 222))
+fin_vagues = 74 * K + 27 * K + 11 * 5 * 21                     # bout droit des frises
+d.text((fin_vagues - d.textlength("surfing the stack", font=sous), 166 * K), "surfing the stack", font=sous, fill=VERT)
 vagues(d, 74 * K + 27 * K, 216 * K, 11, 21, GRIS)
 
-fond.convert("RGB").save("assets/banner-montserrat.png", optimize=True)
+fond.convert("RGB").save("assets/banner-surf.png", optimize=True)
 print("ok")
