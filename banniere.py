@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Bannière du profil GitHub : un temple grec en marbre, grainé comme la photo de
 profil, traversé par la pluie de code binaire verte de Matrix. Fond noir, un seul
-accent vert (charte Lens). Sortie : assets/banner-temple.png."""
+accent vert (charte Lens). Sortie : assets/banner-vagues.png."""
 import random
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageChops, ImageFilter
@@ -49,6 +49,31 @@ def meandre(d, x, y, n, u, coul):
         o = x + k * 4 * u
         d.line([(o, y + 4 * u), (o, y), (o + 3 * u, y), (o + 3 * u, y + 3 * u), (o + u, y + 3 * u),
                 (o + u, y + u), (o + 2 * u, y + u), (o + 2 * u, y + 2 * u)], fill=coul, width=w, joint="curve")
+
+
+def vagues(d, x, y, n, u, coul):
+    """Une frise grecque en vagues (vague vitruvienne) : chaque vague monte en pente
+    douce depuis la ligne de base et s'enroule en spirale à sa crête, vers la droite.
+    Module u ; une vague fait 5u de large et 4u de haut."""
+    import math
+    w = max(2, u // 3)
+    b = y + 4 * u                                                # la ligne de base
+    for k in range(n):
+        o = x + k * 5 * u
+        cx, cy, r0 = o + 2.4 * u, y + 1.7 * u, 1.5 * u            # centre de l'enroulement
+        pts = []
+        # la face avant : de la base jusqu'au sommet de l'enroulement
+        for s in range(25):
+            t = s / 24
+            pts.append((o - 2.6 * u + t * (cx - o + 2.6 * u), b - (b - (cy - r0)) * t ** 1.6))
+        # l'enroulement : un tour et quart, vers l'intérieur, sens horaire à l'écran
+        for s in range(1, 91):
+            t = s / 90
+            a = -math.pi / 2 + t * 2.5 * math.pi
+            r = r0 * (1 - 0.72 * t)
+            pts.append((cx + r * math.cos(a), cy + r * math.sin(a)))
+        d.line(pts, fill=coul, width=w, joint="curve")
+    d.line([(x - 2.6 * u, b), (x + n * 5 * u, b)], fill=coul, width=w)
 
 
 def temple(w, h):
@@ -131,10 +156,13 @@ fond.alpha_composite(noir)
 
 d = ImageDraw.Draw(fond)
 mono = ImageFont.truetype(MONO, 26 * K)
-meandre(d, 74 * K, 92 * K, 13, 7 * K, GRIS)
-d.text((74 * K, 146 * K), "backend .NET engineer", font=mono, fill=VERT_CLAIR)
-d.text((74 * K, 184 * K), "reads binaries · ships services", font=mono, fill=VERT)
-meandre(d, 74 * K, 236 * K, 13, 7 * K, GRIS)
+vagues(d, 74 * K + 27 * K, 72 * K, 11, 21, GRIS)
+serif = ImageFont.truetype("/usr/share/fonts/noto/NotoSerif-Bold.ttf", 44 * K)
+xt = 74 * K
+for lettre in "COMPUTER SCIENTIST":                # capitales espacées, façon inscription
+    d.text((xt, 136 * K), lettre, font=serif, fill=(232, 229, 222))
+    xt += d.textlength(lettre, font=serif) + 6 * K
+vagues(d, 74 * K + 27 * K, 216 * K, 11, 21, GRIS)
 
-fond.convert("RGB").save("assets/banner-temple.png", optimize=True)
+fond.convert("RGB").save("assets/banner-vagues.png", optimize=True)
 print("ok")
