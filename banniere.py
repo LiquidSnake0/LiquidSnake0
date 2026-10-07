@@ -1,69 +1,100 @@
 #!/usr/bin/env python3
-"""Bannière du profil GitHub, charte Lens (gris + un accent vert, Montserrat).
-Produit assets/banner-light.png et assets/banner-dark.png (rendu par rsvg-convert)."""
-import math, subprocess, os
+"""Bannière du profil GitHub : le buste de marbre (la photo de profil) et la pluie
+de code binaire verte de Matrix. Fond noir, un seul accent vert (charte Lens).
+Entrée : assets/avatar.jpg (la photo de profil GitHub). Sortie : assets/banner.png."""
+import random
+from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageEnhance, ImageChops, ImageFilter
 
-W, H = 1280, 320
-THEMES = {
-    "light": dict(fond="#ffffff", lavis="#f2f2f2", encre="#1a1a1a", gris="#555555", pale="#8a8a8a",
-                  ligne="#c9c9c9", sillon="#d8d8d8", disque="#1f1f1f", accent="#2d7548", accent_encre="#1d5030", etiquette_txt="#e7f0ea", bras="#b9b9b9"),
-    "dark":  dict(fond="#0f1110", lavis="#171a18", encre="#ececec", gris="#b4b4b4", pale="#8a8a8a",
-                  ligne="#333733", sillon="#2b2e2c", disque="#050505", accent="#5fa87b", accent_encre="#7cc79a", etiquette_txt="#0f1110", bras="#b4b4b4"),
-}
-
-
-def svg(t):
-    c = THEMES[t]
-    cx, cy, r = 1105, 160, 230          # le disque, coupé par le bord droit
-    sillons = []
-    for i in range(46):
-        rr = 78 + i * 3.3
-        op = 0.35 + 0.5 * ((i * 7) % 5) / 4
-        sillons.append(f'<circle cx="{cx}" cy="{cy}" r="{rr:.1f}" fill="none" stroke="{c["sillon"]}" stroke-width="0.8" opacity="{op:.2f}"/>')
-    # un reflet : deux arcs plus clairs
-    def arc(r0, a0, a1):
-        x0, y0 = cx + r0 * math.cos(a0), cy + r0 * math.sin(a0)
-        x1, y1 = cx + r0 * math.cos(a1), cy + r0 * math.sin(a1)
-        return f'M{x0:.1f},{y0:.1f} A{r0},{r0} 0 0 1 {x1:.1f},{y1:.1f}'
-    reflet = "".join(f'<path d="{arc(rr, math.radians(200), math.radians(240))}" fill="none" stroke="{c["ligne"]}" stroke-width="1.2" opacity="0.55"/>'
-                     for rr in range(110, 220, 9))
-    # le bras de lecture, posé sur le disque
-    bras = (f'<g stroke="{c["bras"]}" stroke-linecap="round" fill="none">'
-            f'<path d="M905,24 L930,24" stroke-width="10"/>'
-            f'<path d="M918,24 L968,190 L992,214" stroke-width="5"/>'
-            f'<rect x="984" y="208" width="22" height="12" rx="2" transform="rotate(45 995 214)" fill="{c["bras"]}" stroke="none"/>'
-            f'</g><circle cx="918" cy="24" r="13" fill="{c["lavis"]}" stroke="{c["bras"]}" stroke-width="2"/>')
-    # une forme d'onde sous le texte, faite de barres : la seule touche d'accent hors étiquette
-    barres = []
-    x = 72
-    for i in range(64):
-        a = abs(math.sin(i * 0.37) * math.cos(i * 0.11)) * 0.85 + 0.15 * abs(math.sin(i * 1.7))
-        h = 6 + a * 34
-        coul = c["accent"] if 22 <= i <= 33 else c["ligne"]
-        barres.append(f'<rect x="{x}" y="{252 - h / 2:.1f}" width="5" height="{h:.1f}" rx="1" fill="{coul}"/>')
-        x += 9
-    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}">
-  <rect width="{W}" height="{H}" fill="{c["fond"]}"/>
-  <rect x="0" y="{H - 2}" width="{W}" height="2" fill="{c["ligne"]}"/>
-  <circle cx="{cx}" cy="{cy}" r="{r}" fill="{c["disque"]}"/>
-  {"".join(sillons)}
-  {reflet}
-  <circle cx="{cx}" cy="{cy}" r="62" fill="{c["accent"]}"/>
-  <circle cx="{cx}" cy="{cy}" r="5" fill="{c["fond"]}"/>
-  <text x="{cx}" y="{cy - 22}" text-anchor="middle" font-family="Montserrat" font-weight="700" font-size="13" letter-spacing="2" fill="{c["etiquette_txt"]}">SIDE A</text>
-  <text x="{cx}" y="{cy + 32}" text-anchor="middle" font-family="DejaVu Sans Mono" font-size="12" fill="{c["etiquette_txt"]}">33 rpm · C#</text>
-  {bras}
-  <text x="72" y="118" font-family="Montserrat" font-weight="700" font-size="64" letter-spacing="-1" fill="{c["encre"]}">Selim Selimi</text>
-  <text x="74" y="162" font-family="Montserrat" font-weight="500" font-size="24" fill="{c["gris"]}">Backend .NET engineer · Geneva</text>
-  <text x="74" y="198" font-family="DejaVu Sans Mono" font-size="16" fill="{c["accent_encre"]}">reads binaries, ships services, plays vinyl</text>
-  {"".join(barres)}
-</svg>'''
+K = 2                                   # rendu en 2x
+W, H = 1280 * K, 320 * K
+VERT, VERT_CLAIR, VERT_SOMBRE = (95, 168, 123), (214, 245, 224), (29, 80, 48)
+MARBRE, GRIS = (232, 229, 222), (138, 138, 138)
+MONO = "/usr/share/fonts/TTF/DejaVuSansMono.ttf"
+SERIF = "/usr/share/fonts/noto/NotoSerif-Bold.ttf"
+rnd = random.Random(1203)
 
 
-os.makedirs("assets", exist_ok=True)
-for t in THEMES:
-    p = f"assets/banner-{t}.svg"
-    open(p, "w").write(svg(t))
-    subprocess.run(["rsvg-convert", "-z", "2", "-o", f"assets/banner-{t}.png", p], check=True)
-    os.remove(p)
+def pluie(densite, lumiere, x0=0, x1=W):
+    """Colonnes de 0 et de 1 qui tombent : une tête claire, une traîne qui s'éteint."""
+    calque = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(calque)
+    f = ImageFont.truetype(MONO, 13 * K)
+    pas = 15 * K
+    for x in range(x0, x1, pas):
+        if rnd.random() > densite:
+            continue
+        for _ in range(rnd.choice((1, 1, 2))):
+            tete = rnd.randint(-H // 4, H + H // 3)
+            long = rnd.randint(6, 22)
+            for i in range(long):
+                y = tete - i * pas
+                if y < -pas or y > H:
+                    continue
+                t = i / long
+                if i == 0:
+                    coul, a = VERT_CLAIR, 255
+                else:
+                    coul = tuple(int(VERT[c] + (VERT_SOMBRE[c] - VERT[c]) * t) for c in range(3))
+                    a = int(230 * (1 - t) ** 1.4)
+                d.text((x, y), rnd.choice("01"), font=f, fill=coul + (int(a * lumiere),))
+    return calque
+
+
+def meandre(d, x, y, n, u, coul):
+    """Une frise grecque (méandre) : une ligne de base, et sur elle n spirales carrées
+    de module u (largeur 4u, hauteur 4u)."""
+    w = max(2, u // 3)
+    d.line([(x, y + 4 * u), (x + n * 4 * u, y + 4 * u)], fill=coul, width=w)
+    for k in range(n):
+        o = x + k * 4 * u
+        d.line([(o, y + 4 * u), (o, y), (o + 3 * u, y), (o + 3 * u, y + 3 * u), (o + u, y + 3 * u),
+                (o + u, y + u), (o + 2 * u, y + u), (o + 2 * u, y + 2 * u)], fill=coul, width=w, joint="curve")
+
+
+fond = Image.new("RGBA", (W, H), (0, 0, 0, 255))
+
+# 1. La pluie de fond : discrète derrière le texte, plus dense vers le buste.
+fond.alpha_composite(pluie(0.35, 0.35, 0, W // 2))
+fond.alpha_composite(pluie(0.75, 0.8, W // 2, W))
+
+# 2. Le buste : la photo en niveaux de gris, contrastée, posée à droite ; elle
+#    s'éclaircit seulement là où elle est plus claire que la pluie (mode « lighten »).
+buste = Image.open("assets/avatar.jpg").convert("L")
+buste = ImageEnhance.Contrast(buste).enhance(1.25)
+taille = H
+buste = buste.resize((taille, taille), Image.LANCZOS).convert("RGBA")
+bx = W - taille - 40 * K
+zone = fond.crop((bx, 0, bx + taille, H))
+zone = ImageChops.lighter(zone, buste)
+fond.paste(zone, (bx, 0))
+
+# 3. La statue se dissout dans le code : une seconde pluie, plus claire, par-dessus
+#    le bas et la gauche du buste.
+devant = pluie(0.55, 0.7, bx - 60 * K, bx + taille // 2)
+masque = Image.new("L", (W, H), 0)
+md = ImageDraw.Draw(masque)
+md.rectangle((bx - 60 * K, H // 3, bx + taille // 2, H), fill=255)
+masque = masque.filter(ImageFilter.GaussianBlur(40 * K))
+devant.putalpha(ImageChops.multiply(devant.getchannel("A"), masque))
+fond.alpha_composite(devant)
+
+# 4. Le voile qui garde le texte lisible, puis le texte.
+voile = Image.new("L", (W, H), 0)
+ImageDraw.Draw(voile).rectangle((0, 0, int(W * 0.52), H), fill=170)
+voile = voile.filter(ImageFilter.GaussianBlur(60 * K))
+noir = Image.new("RGBA", (W, H), (0, 0, 0, 255)); noir.putalpha(voile)
+fond.alpha_composite(noir)
+
+d = ImageDraw.Draw(fond)
+titre = ImageFont.truetype(SERIF, 64 * K)
+x, y = 72 * K, 84 * K
+for lettre in "SELIM":                       # capitales espacées, façon inscription
+    d.text((x, y), lettre, font=titre, fill=MARBRE)
+    x += d.textlength(lettre, font=titre) + 14 * K
+meandre(d, 74 * K, 172 * K, 9, 7 * K, GRIS)
+mono = ImageFont.truetype(MONO, 17 * K)
+d.text((74 * K, 214 * K), "backend .NET engineer", font=mono, fill=VERT_CLAIR)
+d.text((74 * K, 242 * K), "reads binaries · ships services · plays vinyl", font=mono, fill=VERT)
+
+fond.convert("RGB").save("assets/banner.png", optimize=True)
 print("ok")

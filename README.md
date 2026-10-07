@@ -1,9 +1,6 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.png">
-  <img alt="Selim Selimi, backend .NET engineer in Geneva" src="assets/banner-light.png" width="100%">
-</picture>
+<img alt="Selim, backend .NET engineer" src="assets/banner.png" width="100%">
 
-I'm Selim, a backend .NET engineer in Geneva. Seven years of C#, five of them keeping one business platform alive in production: 5,000+ users, a SQL Server schema I designed, a .NET Framework 4.8 → .NET Core migration done without stopping the service, PostFinance payments behind a webhook secured with a shared secret, and third-level support straight from the people using it.
+I'm Selim, a backend .NET engineer. Seven years of C#, five of them keeping one business platform alive in production: 5,000+ users, a SQL Server schema I designed, a .NET Framework 4.8 → .NET Core migration done without stopping the service, PostFinance payments behind a webhook secured with a shared secret, and third-level support straight from the people using it.
 
 Off the clock I take things apart to see how they work. A game engine, read back from its binary. A DJ set, read from the sound itself.
 
@@ -32,4 +29,4 @@ Most days include a training session and some time behind the decks, mixing viny
 
 ---
 
-**Open to backend .NET roles in Geneva and Lausanne.** The best way to reach me is [LinkedIn](https://www.linkedin.com/in/selim-selimi-4a2b55172/).
+**Open to backend .NET roles in French-speaking Switzerland.** The best way to reach me is [LinkedIn](https://www.linkedin.com/in/selim-selimi-4a2b55172/).
