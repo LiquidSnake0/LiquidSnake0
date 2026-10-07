@@ -16,7 +16,7 @@ Off the clock I take things apart to see how they work. A game engine, read back
 | [**cover-pool-kafka**](https://github.com/LiquidSnake0/cover-pool-kafka) · C# | Mortgage loan events replayed through Kafka into a covered bond cover pool, with LTV and eligibility rules. |
 | [**emotion-calculator**](https://github.com/LiquidSnake0/emotion-calculator) · C# | Real-time visuals for a vinyl DJ set. The tempo is derived from the signal, never read from a tag, so it survives the pitch fader. |
 | [**crate**](https://github.com/LiquidSnake0/crate) · TypeScript | A PWA for my record crate: Camelot keys after pitch, genre colours, and which track can follow which, live. |
-| [**cv-generator**](https://github.com/LiquidSnake0/cv-generator) · Python | One JSON source, one variant per application, PDFs out. The build fails before a page overflows. |
+| [**rea**](https://github.com/LiquidSnake0/rea) · TypeScript | My fork of REA, the MCP server that lets AI agents drive Ghidra and other reverse-engineering tools. I use it daily on bully-re and send what I fix back upstream. |
 
 ### Open source
 
