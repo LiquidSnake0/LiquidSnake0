@@ -17,6 +17,7 @@ Off the clock I take things apart to see how they work. A game engine, read back
 
 ### Open source
 
+- [ILSpy #4228](https://github.com/icsharpcode/ILSpy/pull/4228): merged into ILSpy, the reference .NET decompiler. A named argument could inline the loop variable and break `foreach` back into a raw enumerator loop; the fix keeps the `foreach`.
 - [rea #974](https://github.com/morluto/rea/pull/974): a configurable Ghidra startup deadline for REA, the MCP server that lets agents drive Ghidra. Found the hard way, on an 8 MB binary that needed more than the fixed 330 seconds.
 
 ### What I work with
